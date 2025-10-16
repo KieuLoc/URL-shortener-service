@@ -40,21 +40,21 @@ jobs:
       continue-on-error: true
       
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
         path: target/surefire-reports/
         
     - name: Upload SpotBugs results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: spotbugs-results
         path: target/spotbugsXml.xml
         
     - name: Upload Checkstyle results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: checkstyle-results
