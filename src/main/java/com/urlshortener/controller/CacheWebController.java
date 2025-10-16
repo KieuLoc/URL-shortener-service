@@ -2,7 +2,7 @@ package com.urlshortener.controller;
 
 import com.urlshortener.dto.ShortenUrlRequest;
 import com.urlshortener.dto.ShortenUrlResponse;
-import com.urlshortener.service.InMemoryUrlShortenerService;
+import com.urlshortener.service.UrlShortenerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class CacheWebController {
 
-    private final InMemoryUrlShortenerService urlShortenerService;
+    private final UrlShortenerService urlShortenerService;
     
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    public CacheWebController(InMemoryUrlShortenerService urlShortenerService) {
+    public CacheWebController(UrlShortenerService urlShortenerService) {
         this.urlShortenerService = urlShortenerService;
     }
 

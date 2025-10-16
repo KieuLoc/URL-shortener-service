@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author URL Shortener Team
  */
 @Service
-public class InMemoryUrlShortenerService {
+public class InMemoryUrlShortenerService implements UrlShortenerService {
 
     private final ConcurrentMap<String, UrlData> urlCache = new ConcurrentHashMap<>();
     
@@ -34,11 +34,9 @@ public class InMemoryUrlShortenerService {
         // Generate short code
         String shortCode = new ShortCodeGenerator().generate();
         
-        // Calculate expiration date
-        LocalDateTime expirationDate = null;
-        if (request.getExpirationDays() != null) {
-            expirationDate = LocalDateTime.now().plusDays(request.getExpirationDays());
-        }
+        // Set default expiration to 365 days
+        int defaultExpirationDays = 365;
+        LocalDateTime expirationDate = LocalDateTime.now().plusDays(defaultExpirationDays);
         
         // Store in cache
         UrlData urlData = new UrlData(
@@ -66,21 +64,28 @@ public class InMemoryUrlShortenerService {
      * Get original URL by short code
      */
     public String getOriginalUrl(String shortCode) {
+        if (shortCode == null) {
+            return null;
+        }
+        
         UrlData urlData = urlCache.get(shortCode);
-        
-        if (urlData == null) {
-            throw new RuntimeException("Short URL not found");
+        if (urlData != null && urlData.isActive() && (urlData.getExpiresAt() == null || LocalDateTime.now().isBefore(urlData.getExpiresAt()))) {
+            return urlData.getOriginalUrl();
+        }
+        return null;
+    }
+
+    @Override
+    public UrlData getUrlData(String shortCode) {
+        if (shortCode == null) {
+            return null;
         }
         
-        if (!urlData.isActive()) {
-            throw new RuntimeException("Short URL is inactive");
+        UrlData urlData = urlCache.get(shortCode);
+        if (urlData != null && urlData.isActive() && (urlData.getExpiresAt() == null || LocalDateTime.now().isBefore(urlData.getExpiresAt()))) {
+            return urlData;
         }
-        
-        if (urlData.isExpired()) {
-            throw new RuntimeException("Short URL has expired");
-        }
-        
-        return urlData.getOriginalUrl();
+        return null;
     }
     
     /**
@@ -94,36 +99,4 @@ public class InMemoryUrlShortenerService {
         return url.startsWith("http://") || url.startsWith("https://");
     }
     
-    /**
-     * Internal data class for URL storage
-     */
-    private static class UrlData {
-        private final String shortCode;
-        private final String originalUrl;
-        private final LocalDateTime createdAt;
-        private final LocalDateTime expirationDate;
-        private final boolean active;
-        
-        public UrlData(String shortCode, String originalUrl, LocalDateTime createdAt, 
-                      LocalDateTime expirationDate, boolean active) {
-            this.shortCode = shortCode;
-            this.originalUrl = originalUrl;
-            this.createdAt = createdAt;
-            this.expirationDate = expirationDate;
-            this.active = active;
-        }
-        
-        public String getShortCode() { return shortCode; }
-        public String getOriginalUrl() { return originalUrl; }
-        public LocalDateTime getCreatedAt() { return createdAt; }
-        public LocalDateTime getExpirationDate() { return expirationDate; }
-        public boolean isActive() { return active; }
-        
-        public boolean isExpired() {
-            if (expirationDate == null) {
-                return false; // No expiration
-            }
-            return LocalDateTime.now().isAfter(expirationDate);
-        }
-    }
 }
