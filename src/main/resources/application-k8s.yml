@@ -1,0 +1,41 @@
+# Kubernetes-specific configuration
+server:
+  port: 8080
+
+spring:
+  application:
+    name: url-shortener
+  profiles:
+    active: k8s
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging configuration
+logging:
+  level:
+    com.urlshortener: INFO
+    org.springframework.security: WARN
+    org.springframework.web: INFO
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Application-specific configuration
+app:
+  base-url: ${BASE_URL:http://localhost:8080}
+  cache:
+    ttl: 86400 # 24 hours in seconds
+    max-size: 10000 # Maximum number of URLs to cache

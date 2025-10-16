@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-app
+  namespace: url-shortener
+  labels:
+    app: url-shortener
+    component: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: url-shortener
+      component: app
+  template:
+    metadata:
+      labels:
+        app: url-shortener
+        component: app
+    spec:
+      containers:
+      - name: url-shortener
+        image: url-shortener:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: BASE_URL
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: SERVER_PORT
+        - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+        - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS
+        - name: LOGGING_LEVEL_COM_URLSHORTENER
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: LOGGING_LEVEL_COM_URLSHORTENER
+        - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY
+        - name: LOGGING_PATTERN_CONSOLE
+          valueFrom:
+            configMapKeyRef:
+              name: url-shortener-config
+              key: LOGGING_PATTERN_CONSOLE
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+      restartPolicy: Always
