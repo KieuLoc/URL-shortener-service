@@ -1,6 +1,6 @@
 package com.urlshortener.dto;
 
-import com.urlshortener.entity.Url;
+// Entity import removed - using cache
 import java.time.LocalDateTime;
 
 /**
@@ -20,14 +20,7 @@ public class ShortenUrlResponse {
     // Constructors
     public ShortenUrlResponse() {}
 
-    public ShortenUrlResponse(Url url, String baseUrl) {
-        this.shortCode = url.getShortCode();
-        this.shortUrl = baseUrl + "/" + url.getShortCode();
-        this.originalUrl = url.getOriginalUrl();
-        this.createdAt = url.getCreatedAt();
-        this.expiresAt = url.getExpiresAt();
-        this.isActive = url.getIsActive();
-    }
+    // Constructor with Url entity removed - using cache
 
     // Getters and Setters
     public String getShortCode() {

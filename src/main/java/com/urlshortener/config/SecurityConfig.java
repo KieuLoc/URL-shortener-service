@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints
-            .headers(headers -> headers.frameOptions().disable()); // Allow iframe for embedding
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // Allow iframe for embedding
         
         return http.build();
     }
