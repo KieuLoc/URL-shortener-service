@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - URL Shortener</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-link me-2"></i>URL Shortener
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">About URL Shortener</h1>
+                    <p class="lead">A powerful, fast, and secure URL shortening service built with modern technologies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- What is URL Shortener -->
+                <div class="card feature-card mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-3">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            What is URL Shortener?
+                        </h3>
+                        <p class="card-text">
+                            URL Shortener is a web service that takes long URLs and converts them into short, 
+                            shareable links. This is particularly useful for social media, email marketing, 
+                            and anywhere you need to share a link but want it to be concise and professional-looking.
+                        </p>
+                        <p class="card-text">
+                            Our service not only shortens URLs but also provides detailed analytics about 
+                            how your links are being used, including click counts, geographic data, and referrer information.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="card feature-card mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-star text-warning me-2"></i>
+                            Key Features
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Lightning-fast URL shortening
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Click tracking and analytics
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Custom expiration dates
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Secure and reliable service
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        RESTful API for developers
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        User-friendly web interface
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Mobile-responsive design
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Free to use
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Stack -->
+                <div class="card feature-card mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-code text-info me-2"></i>
+                            Technology Stack
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Backend</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-1">
+                                        <i class="fas fa-server text-primary me-2"></i>
+                                        Java 17
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-server text-primary me-2"></i>
+                                        Spring Boot 3.2+
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-server text-primary me-2"></i>
+                                        Spring Data JPA
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-server text-primary me-2"></i>
+                                        PostgreSQL
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Frontend</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-1">
+                                        <i class="fas fa-desktop text-success me-2"></i>
+                                        Thymeleaf Templates
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-desktop text-success me-2"></i>
+                                        Bootstrap 5
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-desktop text-success me-2"></i>
+                                        Font Awesome Icons
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fas fa-desktop text-success me-2"></i>
+                                        Responsive Design
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Use -->
+                <div class="card feature-card mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-play-circle text-success me-2"></i>
+                            How to Use
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <span class="fw-bold">1</span>
+                                </div>
+                                <h5>Enter URL</h5>
+                                <p class="text-muted">Paste your long URL into the input field</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <span class="fw-bold">2</span>
+                                </div>
+                                <h5>Click Shorten</h5>
+                                <p class="text-muted">Click the shorten button to generate your short link</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <span class="fw-bold">3</span>
+                                </div>
+                                <h5>Share & Track</h5>
+                                <p class="text-muted">Copy and share your short URL, then track analytics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Documentation -->
+                <div class="card feature-card mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-book text-primary me-2"></i>
+                            API Documentation
+                        </h3>
+                        <p class="card-text mb-3">
+                            Our service provides a RESTful API for developers who want to integrate URL shortening 
+                            functionality into their applications.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Available Endpoints:</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-1">
+                                        <code>POST /api/urls/shorten</code> - Create short URL
+                                    </li>
+                                    <li class="mb-1">
+                                        <code>GET /api/urls/{code}</code> - Get URL info
+                                    </li>
+                                    <li class="mb-1">
+                                        <code>GET /{code}</code> - Redirect to original URL
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Response Format:</h6>
+                                <pre class="bg-light p-2 rounded"><code>{
+  "success": true,
+  "message": "URL shortened successfully",
+  "data": {
+    "shortCode": "abc123",
+    "shortUrl": "http://localhost:8080/abc123",
+    "originalUrl": "https://example.com/very/long/url"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-link me-2"></i>URL Shortener</h5>
+                    <p class="mb-0">A simple and fast URL shortening service with analytics.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; 2024 URL Shortener. Built with Spring Boot & Thymeleaf.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
