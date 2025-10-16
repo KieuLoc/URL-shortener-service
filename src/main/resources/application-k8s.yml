@@ -5,8 +5,19 @@ server:
 spring:
   application:
     name: url-shortener
-  profiles:
-    active: k8s
+  
+  # Redis configuration for Kubernetes
+  redis:
+    host: ${SPRING_REDIS_HOST:redis}
+    port: ${SPRING_REDIS_PORT:6379}
+    database: 0
+    timeout: 2000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1
 
 # Management endpoints
 management:

@@ -6,19 +6,21 @@ A modern, scalable URL shortener service built with **Java Spring Boot** and **T
 
 - 🔗 **URL Shortening**: Convert long URLs to short, memorable links
 - 🎯 **Smart Redirects**: HTTP 302 redirects for optimal SEO
-- 💾 **In-Memory Cache**: Fast, lightweight storage with TTL support
+- 💾 **Redis Cache**: Persistent, scalable storage with TTL support
 - 🌐 **Web Interface**: Beautiful, responsive Thymeleaf GUI
-- 🐳 **Docker Ready**: Complete containerization with Docker Compose
+- 🐳 **Docker Ready**: Complete containerization with Redis + App
 - 🚀 **CI/CD Pipeline**: GitHub Actions for testing, linting, and deployment
 - ☸️ **Kubernetes Support**: Production-ready K8s configurations
 - 🔒 **Security**: Spring Security with public access configuration
 - 📊 **Health Monitoring**: Spring Boot Actuator endpoints
 - 🧪 **Testing**: Comprehensive unit and integration tests
+- ⚡ **High Performance**: Sub-millisecond Redis operations
 
 ## 🛠 **Tech Stack**
 
 - **Backend**: Java 17, Spring Boot 3.2+
 - **Frontend**: Thymeleaf, Bootstrap 5, JavaScript
+- **Cache**: Redis 7, Jedis Client
 - **Build Tool**: Maven 3.9+
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
@@ -32,6 +34,7 @@ A modern, scalable URL shortener service built with **Java Spring Boot** and **T
 - **Java 17+**
 - **Maven 3.9+**
 - **Docker & Docker Compose**
+- **Redis** (optional - included in Docker Compose)
 
 ### **1. Clone Repository**
 ```bash
@@ -41,20 +44,39 @@ cd shorten-url
 
 ### **2. Run with Docker (Recommended)**
 ```bash
-# Build and start all services
+# Build and start Redis + App
 docker-compose up --build
+
+# Check Redis is running
+docker exec -it url-shortener-redis redis-cli ping
+# Should return: PONG
 
 # Access the application
 open http://localhost:8080
 ```
 
-### **3. Run Locally**
+### **3. Run Locally with Redis**
 ```bash
+# Start Redis (if not using Docker)
+redis-server
+
 # Build the project
 ./mvnw clean package
 
 # Run the application
 ./mvnw spring-boot:run
+
+# Access the application
+open http://localhost:8080
+```
+
+### **4. Run Locally (In-Memory Cache)**
+```bash
+# Build the project
+./mvnw clean package
+
+# Run with in-memory cache (no Redis needed)
+./mvnw spring-boot:run -Dspring.profiles.active=default
 
 # Access the application
 open http://localhost:8080
@@ -87,11 +109,18 @@ curl http://localhost:8080/actuator/health
 
 ### **Development**
 ```bash
-# Start with hot reload
+# Start Redis + App with hot reload
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-# View logs
+# View app logs
 docker-compose logs -f app
+
+# View Redis logs
+docker-compose logs -f redis
+
+# Check Redis data
+docker exec -it url-shortener-redis redis-cli
+# In Redis CLI: KEYS * (to see all keys)
 ```
 
 ### **Production**
@@ -102,8 +131,14 @@ docker-compose up --build -d
 # Check status
 docker-compose ps
 
+# Check Redis persistence
+docker exec -it url-shortener-redis redis-cli ping
+
 # Stop services
 docker-compose down
+
+# Stop and remove volumes (WARNING: deletes Redis data)
+docker-compose down -v
 ```
 
 ### **Docker Commands**
@@ -111,14 +146,23 @@ docker-compose down
 # Build image
 docker build -t url-shortener:latest .
 
-# Run container
-docker run -p 8080:8080 url-shortener:latest
+# Run container with Redis
+docker run -p 8080:8080 \
+  -e SPRING_REDIS_HOST=host.docker.internal \
+  -e SPRING_REDIS_PORT=6379 \
+  url-shortener:latest
+
+# Run Redis separately
+docker run -d --name redis -p 6379:6379 redis:7-alpine
 
 # View logs
 docker logs <container-id>
 
 # Execute shell
 docker exec -it <container-id> /bin/sh
+
+# Redis CLI
+docker exec -it redis redis-cli
 ```
 
 ## ☸️ **Kubernetes Deployment**
@@ -273,7 +317,21 @@ server:
 # Spring profiles
 spring:
   profiles:
-    active: default
+    active: ${SPRING_PROFILES_ACTIVE:default}
+
+# Redis configuration
+spring:
+  redis:
+    host: localhost        # or 'redis' in Docker
+    port: 6379
+    database: 0
+    timeout: 2000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1
 
 # Management endpoints
 management:
@@ -284,10 +342,16 @@ management:
 ```
 
 ### **Environment Variables**
-- `SPRING_PROFILES_ACTIVE`: Spring profile
+- `SPRING_PROFILES_ACTIVE`: Spring profile (default, docker, k8s)
 - `BASE_URL`: Base URL for short URLs
 - `SERVER_PORT`: Application port
+- `SPRING_REDIS_HOST`: Redis server host
+- `SPRING_REDIS_PORT`: Redis server port
 - `LOGGING_LEVEL_*`: Logging configuration
+
+### **Cache Options**
+- **Redis** (default): Persistent, scalable, production-ready
+- **In-Memory**: Simple, no external dependencies
 
 ## 🐛 **Troubleshooting**
 
@@ -300,22 +364,37 @@ management:
    taskkill /F /PID <PID>
    ```
 
-2. **Docker daemon not running**
+2. **Redis connection failed**
+   ```bash
+   # Check Redis is running
+   docker exec -it url-shortener-redis redis-cli ping
+   
+   # Start Redis if not running
+   docker-compose up redis -d
+   
+   # Check Redis logs
+   docker-compose logs redis
+   ```
+
+3. **Docker daemon not running**
    ```bash
    # Start Docker Desktop
    # Wait for full initialization
    ```
 
-3. **Application not accessible**
+4. **Application not accessible**
    ```bash
-   # Check if container is running
+   # Check if containers are running
    docker-compose ps
    
-   # Check logs
+   # Check app logs
    docker-compose logs app
+   
+   # Check Redis logs
+   docker-compose logs redis
    ```
 
-4. **Kubernetes deployment issues**
+5. **Kubernetes deployment issues**
    ```bash
    # Check pod status
    kubectl get pods -n url-shortener
@@ -334,8 +413,19 @@ curl -X POST http://localhost:8080/shorten \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}'
 
+# Check Redis connection
+docker exec -it url-shortener-redis redis-cli ping
+
+# View Redis data
+docker exec -it url-shortener-redis redis-cli
+# In Redis CLI: KEYS * (see all keys)
+# In Redis CLI: GET url:abc123 (get specific URL)
+
 # View application logs
 docker-compose logs -f app
+
+# View Redis logs
+docker-compose logs -f redis
 ```
 
 ## 🤝 **Contributing**
@@ -352,10 +442,6 @@ docker-compose logs -f app
 - Update documentation
 - Ensure CI/CD pipeline passes
 
-## 📄 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 **Acknowledgments**
 
 - **Spring Boot** team for the excellent framework
@@ -365,5 +451,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Kubernetes** for orchestration
 
 ---
-
-**Made with ❤️ by the URL Shortener Team**
