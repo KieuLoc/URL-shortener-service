@@ -60,11 +60,11 @@ jobs:
         name: checkstyle-results
         path: target/checkstyle-result.xml
 
-         docker:
-           name: Build Docker Image
-           runs-on: ubuntu-latest
-           needs: test
-           if: github.ref == 'refs/heads/master'
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master'
     
     steps:
     - name: Checkout code
