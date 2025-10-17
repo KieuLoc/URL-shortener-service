@@ -23,7 +23,6 @@ public class RedisUrlShortenerService implements UrlShortenerService {
     private final ShortCodeGenerator shortCodeGenerator;
     
     private static final String URL_KEY_PREFIX = "url:";
-    private static final String URL_DATA_PREFIX = "url_data:";
 
     @Autowired
     public RedisUrlShortenerService(RedisTemplate<String, Object> redisTemplate, 
@@ -46,19 +45,10 @@ public class RedisUrlShortenerService implements UrlShortenerService {
         // Generate short code
         String shortCode = shortCodeGenerator.generate();
         
-        // Set default expiration to 365 days
+        // Set default expiration to 1 day
         int defaultExpirationDays = 1;
         LocalDateTime expirationDate = LocalDateTime.now().plusDays(defaultExpirationDays);
         long ttlSeconds = defaultExpirationDays * 24 * 60 * 60; // Convert days to seconds
-        
-        // Create URL data
-        UrlData urlData = new UrlData(
-            shortCode,
-            originalUrl,
-            LocalDateTime.now(),
-            expirationDate,
-            true
-        );
         
         // Store in Redis - simplified approach
         String urlKey = URL_KEY_PREFIX + shortCode;
@@ -95,40 +85,7 @@ public class RedisUrlShortenerService implements UrlShortenerService {
         return originalUrl;
     }
     
-    /**
-     * Get URL data by short code
-     */
-    @Override
-    public UrlData getUrlData(String shortCode) {
-        String urlKey = URL_KEY_PREFIX + shortCode;
-        String originalUrl = (String) redisTemplate.opsForValue().get(urlKey);
-        
-        if (originalUrl != null) {
-            // Create a simple UrlData object with default values
-            return new UrlData(
-                shortCode,
-                originalUrl,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(1), // Default 1 day expiration
-                true
-            );
-        }
-        
-        return null;
-    }
     
-    /**
-     * Delete URL from Redis
-     */
-    public boolean deleteUrl(String shortCode) {
-        String urlKey = URL_KEY_PREFIX + shortCode;
-        String dataKey = URL_DATA_PREFIX + shortCode;
-        
-        Boolean urlDeleted = redisTemplate.delete(urlKey);
-        Boolean dataDeleted = redisTemplate.delete(dataKey);
-        
-        return (urlDeleted != null && urlDeleted) || (dataDeleted != null && dataDeleted);
-    }
     
     /**
      * Check if URL is valid

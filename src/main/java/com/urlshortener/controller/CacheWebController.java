@@ -42,12 +42,14 @@ public class CacheWebController {
     @PostMapping("/shorten")
     public String shortenUrl(@ModelAttribute ShortenUrlRequest request, 
                            RedirectAttributes redirectAttributes) {
+        System.out.println("🔍 DEBUG: shortenUrl method called with URL: " + request.getUrl());
         try {
             ShortenUrlResponse response = urlShortenerService.shortenUrl(request);
-            
+            System.out.println("🔍 DEBUG: URL shortened successfully: " + response.getShortUrl());
+            // addFlashAttribute for get result from /
             redirectAttributes.addFlashAttribute("successMessage", "URL shortened successfully!");
             redirectAttributes.addFlashAttribute("shortUrl", response);
-            
+            // redirect / to avoid F5 double submit error, and help UI display results from flash attributes safely. 
             return "redirect:/";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid URL: " + e.getMessage());

@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class InMemoryUrlShortenerService implements UrlShortenerService {
 
-    private final ConcurrentMap<String, UrlData> urlCache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Object> urlCache = new ConcurrentHashMap<>();
     
     /**
      * Shorten URL and store in memory cache
@@ -39,15 +39,7 @@ public class InMemoryUrlShortenerService implements UrlShortenerService {
         LocalDateTime expirationDate = LocalDateTime.now().plusDays(defaultExpirationDays);
         
         // Store in cache
-        UrlData urlData = new UrlData(
-            shortCode,
-            originalUrl,
-            LocalDateTime.now(),
-            expirationDate,
-            true
-        );
-        
-        urlCache.put(shortCode, urlData);
+        urlCache.put(shortCode, originalUrl);
         
         ShortenUrlResponse response = new ShortenUrlResponse();
         response.setShortCode(shortCode);
@@ -68,23 +60,8 @@ public class InMemoryUrlShortenerService implements UrlShortenerService {
             return null;
         }
         
-        UrlData urlData = urlCache.get(shortCode);
-        if (urlData != null && urlData.isActive() && (urlData.getExpiresAt() == null || LocalDateTime.now().isBefore(urlData.getExpiresAt()))) {
-            return urlData.getOriginalUrl();
-        }
-        return null;
-    }
-
-    @Override
-    public UrlData getUrlData(String shortCode) {
-        if (shortCode == null) {
-            return null;
-        }
-        
-        UrlData urlData = urlCache.get(shortCode);
-        if (urlData != null && urlData.isActive() && (urlData.getExpiresAt() == null || LocalDateTime.now().isBefore(urlData.getExpiresAt()))) {
-            return urlData;
-        }
+        Object data = urlCache.get(shortCode);
+        if (data instanceof String) return (String) data;
         return null;
     }
     
