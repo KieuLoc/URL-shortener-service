@@ -31,10 +31,18 @@ public class CacheRedirectController {
             // Get original URL from cache
             String originalUrl = urlShortenerService.getOriginalUrl(shortCode);
             
-            // Return HTTP 302 redirect with Location header
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", originalUrl)
-                    .build();
+            if (originalUrl != null) {
+                // Track click for analytics
+                urlShortenerService.trackClick(shortCode);
+                
+                // Return HTTP 302 redirect with Location header
+                return ResponseEntity.status(HttpStatus.FOUND)
+                        .header("Location", originalUrl)
+                        .build();
+            } else {
+                // Return 404 if URL not found
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
                     
         } catch (RuntimeException e) {
             // Return 404 if URL not found or expired

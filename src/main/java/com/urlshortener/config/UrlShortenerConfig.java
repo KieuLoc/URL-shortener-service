@@ -35,9 +35,12 @@ public class UrlShortenerConfig {
             try {
                 // Test Redis connection
                 redisUrlShortenerService.getOriginalUrl("test");
+                System.out.println("✅ Using RedisUrlShortenerService");
                 return redisUrlShortenerService;
             } catch (Exception e) {
                 // Redis not available, use In-Memory
+                System.out.println("❌ Redis failed, using InMemoryUrlShortenerService: " + e.getMessage());
+                e.printStackTrace();
                 return inMemoryUrlShortenerService;
             }
         }

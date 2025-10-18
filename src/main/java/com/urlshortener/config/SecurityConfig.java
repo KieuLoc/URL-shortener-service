@@ -20,9 +20,11 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authz -> authz
                 // Allow public access to web pages
-                .requestMatchers("/", "/about", "/info/**").permitAll()
+                .requestMatchers("/", "/about", "/analytics", "/info/**").permitAll()
                 // Allow public access to shorten URLs
                 .requestMatchers("/shorten").permitAll()
+                // Allow public access to analytics API
+                .requestMatchers("/api/analytics/**").permitAll()
                 // Allow public access to redirect URLs (short codes)
                 .requestMatchers("/*").permitAll()
                 // Allow public access to health check
