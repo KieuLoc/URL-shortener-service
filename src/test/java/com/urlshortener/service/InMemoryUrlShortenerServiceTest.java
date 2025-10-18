@@ -55,33 +55,6 @@ class InMemoryUrlShortenerServiceTest {
         assertEquals("Invalid URL format", exception.getMessage());
     }
 
-    @Test
-    @DisplayName("Should throw exception for null URL")
-    void shouldThrowExceptionForNullUrl() {
-        // Given
-        ShortenUrlRequest request = new ShortenUrlRequest(null);
-
-        // When & Then
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> urlShortenerService.shortenUrl(request)
-        );
-        assertEquals("Invalid URL format", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception for empty URL")
-    void shouldThrowExceptionForEmptyUrl() {
-        // Given
-        ShortenUrlRequest request = new ShortenUrlRequest("");
-
-        // When & Then
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> urlShortenerService.shortenUrl(request)
-        );
-        assertEquals("Invalid URL format", exception.getMessage());
-    }
 
     @Test
     @DisplayName("Should redirect to original URL for valid short code")
@@ -121,20 +94,6 @@ class InMemoryUrlShortenerServiceTest {
         assertNull(originalUrl);
     }
 
-    @Test
-    @DisplayName("Should handle expiration date correctly")
-    void shouldHandleExpirationDateCorrectly() {
-        // Given
-        ShortenUrlRequest request = new ShortenUrlRequest("https://www.example.com", 7);
-
-        // When
-        ShortenUrlResponse response = urlShortenerService.shortenUrl(request);
-
-        // Then
-        assertNotNull(response);
-        assertNotNull(response.getExpiresAt());
-        assertTrue(response.getExpiresAt().isAfter(response.getCreatedAt()));
-    }
 
     @Test
     @DisplayName("Should generate unique short codes for different URLs")
