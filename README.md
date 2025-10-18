@@ -7,12 +7,13 @@ A modern, scalable URL shortener service built with **Java Spring Boot** and **T
 - 🔗 **URL Shortening**: Convert long URLs to short, memorable links
 - 🎯 **Smart Redirects**: HTTP 302 redirects for optimal SEO
 - 💾 **Redis Cache**: Persistent, scalable storage with TTL support
+- 📊 **Basic Analytics**: Track clicks, view top URLs, and recent activity
 - 🌐 **Web Interface**: Beautiful, responsive Thymeleaf GUI
 - 🐳 **Docker Ready**: Complete containerization with Redis + App
 - 🚀 **CI/CD Pipeline**: GitHub Actions for testing, linting, and deployment
 - ☸️ **Kubernetes Support**: Production-ready K8s configurations
 - 🔒 **Security**: Spring Security with public access configuration
-- 📊 **Health Monitoring**: Spring Boot Actuator endpoints
+- 📈 **Health Monitoring**: Spring Boot Actuator endpoints
 - 🧪 **Testing**: Comprehensive unit and integration tests
 - ⚡ **High Performance**: Sub-millisecond Redis operations
 
