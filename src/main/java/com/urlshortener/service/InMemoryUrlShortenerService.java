@@ -34,10 +34,6 @@ public class InMemoryUrlShortenerService implements UrlShortenerService {
         // Generate short code
         String shortCode = new ShortCodeGenerator().generate();
         
-        // Set default expiration to 365 days
-        int defaultExpirationDays = 365;
-        LocalDateTime expirationDate = LocalDateTime.now().plusDays(defaultExpirationDays);
-        
         // Store in cache
         urlCache.put(shortCode, originalUrl);
         
@@ -46,7 +42,6 @@ public class InMemoryUrlShortenerService implements UrlShortenerService {
         response.setShortUrl("http://localhost:8080/" + shortCode);
         response.setOriginalUrl(originalUrl);
         response.setCreatedAt(LocalDateTime.now());
-        response.setExpiresAt(expirationDate);
         response.setActive(true);
         
         return response;

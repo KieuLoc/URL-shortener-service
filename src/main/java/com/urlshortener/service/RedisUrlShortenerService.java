@@ -45,9 +45,8 @@ public class RedisUrlShortenerService implements UrlShortenerService {
         // Generate short code
         String shortCode = shortCodeGenerator.generate();
         
-        // Set default expiration to 1 day
+        // Set default TTL to 1 day (Redis will handle expiration)
         int defaultExpirationDays = 1;
-        LocalDateTime expirationDate = LocalDateTime.now().plusDays(defaultExpirationDays);
         long ttlSeconds = defaultExpirationDays * 24 * 60 * 60; // Convert days to seconds
         
         // Store in Redis - simplified approach
@@ -66,7 +65,6 @@ public class RedisUrlShortenerService implements UrlShortenerService {
         response.setShortUrl("http://localhost:8080/" + shortCode);
         response.setOriginalUrl(originalUrl);
         response.setCreatedAt(LocalDateTime.now());
-        response.setExpiresAt(expirationDate);
         response.setActive(true);
         
         return response;
